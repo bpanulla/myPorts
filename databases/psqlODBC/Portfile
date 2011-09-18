@@ -2,35 +2,30 @@
 # $Id$
 
 PortSystem          1.0
-PortGroup           archcheck 1.0
 
 name                psqlODBC
 version             09.00.0310
 revision            0
 categories          databases
 platforms           darwin
-maintainers         bpanulla
+maintainers         panulla.com:macports
 
-description         psqlODBC is the official ODBC driver for the PostgreSQL database.
+description         Official ODBC driver for the PostgreSQL database.
 
 long_description \
     psqlODBC allows ODBC-compliant applications to connect to \
     PostgreSQL database servers.
 
 homepage            http://psqlODBC.projects.postgresql.org
-master_sites        http://ftp9.us.postgresql.org/pub/mirrors/postgresql/odbc/versions/src/ \
-					postgresql:odbc/versions/src/
+master_sites        postgresql:odbc/versions/src/
 
-distname			psqlodbc-${version}
+distname            psqlodbc-${version}
 
 checksums           md5     78144d9ea6c40f0a0a0b92128e6b0e05 \
                     sha1    669d395534423eb5e4d6733d681e6a2ce073bf51 \
                     rmd160  299afefc6cd6256733bc272ea520d0c8b8a64b07
 
 use_parallel_build              yes
-
-configure.args \
-    --prefix=${prefix}
 
 variant iodbc conflicts unixodbc description {Use iODBC} {
     depends_lib-append          port:libiodbc
@@ -61,9 +56,6 @@ foreach s ${pgsql_suffixes} {
     eval [subst {
         variant ${p} description "Build with PostgreSQL ${v}" conflicts ${c} {
             depends_lib-append  port:${p}
-
-            archcheck.files-append \
-                lib/${p}/libpq.dylib
 
             configure.args-append   --with-libpq=${prefix}/lib/${p}/bin/pg_config
         }
