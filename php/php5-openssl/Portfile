@@ -1,0 +1,34 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem              1.0
+PortGroup               php5extension 1.0
+
+php5extension.setup     openssl 5.3.3 bundled
+categories-append       devel security
+platforms               darwin
+maintainers             ryandesign
+
+description             a PHP interface to OpenSSL signature-generation \
+                        and -verification and data-encryption and \
+                        -decryption functions
+
+long_description        ${description}
+
+checksums               md5     21ceeeb232813c10283a5ca1b4c87b48 \
+                        sha1    9f66716b341119e4e4f8fe3d81b7d0a5daf3cbc8 \
+                        rmd160  9edb51663feac9b787f8382012893f1ac98fec6a
+
+depends_lib-append      port:openssl
+
+post-extract {
+    move ${build.dir}/config0.m4 ${build.dir}/config.m4
+}
+
+configure.args-append   --with-openssl=${prefix}
+
+platform macosx {
+    configure.args-append --with-kerberos=/usr
+}
+
+use_parallel_build      yes
