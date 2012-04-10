@@ -1,0 +1,25 @@
+# $Id$
+
+PortSystem 1.0
+PortGroup python27 1.0
+
+name			py27-modestmaps
+version			1.4.0
+categories		python
+platforms		darwin
+maintainers		openmaintainer
+description		Modest Maps python port.
+long_description	Modest Maps is a small, extensible, and free library for designers \
+			and developers who want to use interactive maps in their own \
+			projects. It provides a core set of features in a tight, clean \
+			package with plenty of hooks for additional functionality.
+
+homepage		http://pypi.python.org/pypi/ModestMaps
+master_sites		http://py.modestmaps.com/dist
+distname		ModestMaps-Py-${version}
+checksums           md5     9ddc543586810e35f186e0db919b570b \
+                    sha1    f74bfe87c68774fff11aa5bea52e80701e9e166e \
+                    rmd160  c994c3ef789a6f58b866f909aebf9fb9d87a719e
+
+depends_lib-append	port:py27-distribute port:py27-pil
+worksrcdir		ModestMaps-${version}

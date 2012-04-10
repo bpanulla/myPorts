@@ -1,0 +1,29 @@
+# $Id$
+
+PortSystem 1.0
+PortGroup python27 1.0
+
+name			py27-isodate
+version			0.4.7
+categories		python
+platforms		darwin
+maintainers		openmaintainer
+description		An ISO 8601 date/time/duration parser and formater
+long_description	RDFLib is a Python library for working with RDF, a \
+				This module implements ISO 8601 date, time and duration \
+				parsing. The implementation follows ISO8601:2004 standard, \
+				and implements only date/time representations mentioned in \
+				the standard.
+
+homepage		http://http://pypi.python.org/pypi/isodate/
+master_sites	http://pypi.python.org/packages/source/i/isodate/
+distname		isodate-${version}
+checksums           md5     4ab330655445387b449de381f6ca864c \
+                    sha1    055e06751f0c853610917c90e0839bc07798f4b1 \
+                    rmd160  ac0dd1fd5bd9e11480c8335532f285e14a7289af
+
+depends_lib-append	port:py27-distribute
+
+test.run		yes
+test.cmd		${python.bin} setup.py test
+test.target	

@@ -1,0 +1,37 @@
+# $Id$
+
+PortSystem 1.0
+PortGroup python27 1.0
+
+name			py27-rdflib
+version			3.2.0
+categories		python textproc
+platforms		darwin
+maintainers		mnick
+description		Python library for working with RDF
+long_description	RDFLib is a Python library for working with RDF, a \
+				simple yet powerful language for representing \
+				information. The library contains an RDF/XML \
+				parser/serializer, a TripleStore, an InformationStore \
+				and various store backends (InMemory, SleepyCat BTree, \
+				ZODB BTree).
+
+homepage		http://code.google.com/p/rdflib/
+master_sites	http://rdflib.googlecode.com/files/
+distname		rdflib-${version}
+checksums           md5     ab3d3a5f71ebb6fe4fd33539f5d5768e \
+                    sha1    ea997378c2dcf71b436f0c869524175ca6385e8d \
+                    rmd160  9f9bfcf6432548ba21491e4c1c8aac48576d7f3c
+
+depends_lib-append	port:py27-distribute port:py27-isodate
+
+test.run		yes
+test.cmd		${python.bin} run_tests.py
+test.target
+
+post-destroot {
+	xinstall -m 644 -W ${worksrcpath} CHANGELOG LICENSE \
+		README ${destroot}${prefix}/share/doc/${name}
+	xinstall -m 644 ${worksrcpath}/examples/example.py \
+		${destroot}${prefix}/share/doc/${name}/examples
+}

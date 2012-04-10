@@ -1,0 +1,14 @@
+--- setup.py.orig	Fri Dec 30 11:04:36 2011 -0800
++++ setup.py	Fri Dec 30 11:06:45 2011 -0800
+@@ -132,8 +132,9 @@
+         settings['libraries'].append('odbc32')
+ 
+     elif sys.platform == 'darwin':
+-        # OS/X now ships with iODBC.
+-        settings['libraries'].append('iodbc')
++        settings['libraries'].append('odbc')
++        settings['include_dirs'] = ['/opt/local/include']
++        settings['library_dirs'] = ['/opt/local/lib']
+ 
+     else:
+         # Other posix-like: Linux, Solaris, etc.
