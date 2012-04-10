@@ -4,7 +4,7 @@
 PortSystem 1.0
 
 name                 py27-mapnik
-version              2.0.0
+version              2.0.1
 categories           python gis
 
 maintainers          gmail.com:dbsgeo
@@ -13,11 +13,11 @@ platforms            darwin
 
 master_sites         https://github.com/downloads/mapnik/mapnik/
                      
-distname             mapnik-${version}
-worksrcdir           mapnik-${version}
-checksums            md5     499c6a61544014b9bc2a7c978f963ef3 \
-                     sha1    afa49fc80ea38c7d58c940ae5b9a549ce20f5685 \
-                     rmd160  73cf94c7fb417567ee43bc9215db6e5b752a0528
+distname             mapnik-v${version}
+worksrcdir           mapnik-v${version}
+checksums            md5     e3dd09991340e2568b99f46bac34b0a8 \
+                     sha1    0ae6a338e3ddb480b53fb7bbc984c4b0479aef88 \
+                     rmd160  f001bb31f5f9b0c210f9800ed02832ecf993ec05
 use_bzip2            yes
 
 universal_variant       no
