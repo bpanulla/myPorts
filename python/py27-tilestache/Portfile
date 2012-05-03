@@ -4,21 +4,19 @@ PortSystem 1.0
 PortGroup python27 1.0
 
 name			py27-tilestache
-version			1.29.2
+version			1.31.1
 categories		python
 platforms		darwin
 maintainers		openmaintainer
-description		Modest Maps python port.
-long_description	Modest Maps is a small, extensible, and free library for designers \
-			and developers who want to use interactive maps in their own \
-			projects. It provides a core set of features in a tight, clean \
-			package with plenty of hooks for additional functionality.
+description		Python-based map tile server.
+long_description	TileStache is a Python-based server application that can serve \
+			up map tiles based on rendered geographic data.
 
 homepage		http://pypi.python.org/pypi/TileStache
 master_sites		http://tilestache.org/download
 distname		TileStache-${version}
-checksums           md5     13977cbd1ba27dd747149c4ac7ac3237 \
-                    sha1    251365cb1d7c623cf2cfa495e60f6f7f6cbf8528 \
-                    rmd160  73fc2ee6589a3e4eac857c2fcbe841b067dbf227
+checksums           md5     c3b287bdb2fc603ba7df459f1415d6e0 \
+                    sha1    7ef31776620b8e3a8c5aec668aa4ceb5af829d7d \
+                    rmd160  dc748b3720c4993024fa0e8d363be334d179cdcb
 
 depends_lib-append	port:py27-distribute port:py27-simplejson port:py27-pil port:py27-modestmaps

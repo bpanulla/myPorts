@@ -5,6 +5,7 @@ PortSystem 1.0
 
 name                 py27-mapnik
 version              2.0.1
+revision             1
 categories           python gis
 
 maintainers          gmail.com:dbsgeo
@@ -51,6 +52,8 @@ depends_lib         port:boost \
                     port:proj \
                     port:libxml2 \
                     port:python27
+
+patchfiles          build.py.patch
 
 set python  "${prefix}/bin/python2.7"
 
