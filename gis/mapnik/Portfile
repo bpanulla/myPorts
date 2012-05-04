@@ -1,0 +1,199 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id$
+
+PortSystem                  1.0
+
+name                        mapnik2
+version                     2.0.0
+categories                  gis
+platforms                   darwin
+license                     LGPL-2.1
+maintainers                 gmail.com:larry.velazquez
+description                 Open Source C++/Python mapping toolkit.
+long_description            Mapnik is a Free Toolkit for developing mapping \
+                            applications. It's written in C++ and there are \
+                            Python bindings to facilitate fast-paced agile \
+                            development. It can comfortably be used for both \
+                            desktop and web development. Mapnik2 is current \
+                            trunk and a new era of the Mapnik codebase that \
+                            uses boost features only available in boost \
+                            >=1.41, icu >=4.2, and is a testbed for \
+                            next-generation Mapnik features.
+homepage                    http://mapnik.org/
+
+conflicts                   py26-mapnik
+
+master_sites                http://cloud.github.com/downloads/mapnik/mapnik/ \
+                            http://download.berlios.de/mapnik/ \
+                            http://download2.berlios.de/mapnik/
+distname                    mapnik-${version}
+checksums                   sha1    afa49fc80ea38c7d58c940ae5b9a549ce20f5685 \
+                            rmd160  73cf94c7fb417567ee43bc9215db6e5b752a0528
+use_bzip2                   yes
+
+depends_lib-append          port:boost \
+                            port:libpng \
+                            port:jpeg \
+                            port:tiff \
+                            port:icu \
+                            port:zlib \
+                            port:freetype \
+                            port:proj \
+                            port:libxml2
+
+set python_suffixes {25 26 27}
+set python_ports {}
+foreach s ${python_suffixes} {
+    lappend python_ports python${s}
+}
+foreach s ${python_suffixes} {
+    set p python${s}
+    set v [string index ${s} 0].[string index ${s} 1]
+    set i [lsearch -exact ${python_ports} ${p}]
+    set c [lreplace ${python_ports} ${i} ${i}]
+    eval [subst {
+        variant ${p} conflicts ${c} description {Build Python bindings} {
+            depends_lib-append      port:${p}
+            configure.args-delete   BINDINGS=none
+            configure.args-append   BINDINGS=python
+            configure.args-append   PYTHON=${prefix}/bin/python${v}
+        }
+    }]
+}
+
+proc python_branch {} {
+    global python_suffixes
+    foreach s ${python_suffixes} {
+        if {[variant_isset python${s}]} { return ${s} }
+    }
+    error "Python support not enabled."
+}
+
+variant cairo description {Enable Cairo support for PDF, PostScript, and SVG} {
+    configure.args-delete   CAIRO=False
+    configure.args-append   CAIRO=True
+    depends_build-append    port:pkgconfig
+    depends_lib-append      path:lib/pkgconfig/cairomm-1.0.pc:cairomm
+    if {![catch {set s [python_branch]}]} {
+        set pf Python.framework/Versions/[string index ${s} 0].[string index ${s} 1]
+        depends_lib-append      port:py[expr {${s} == 24 ? {} : ${s}}]-cairo
+        configure.args-append   PKG_CONFIG_PATH=${frameworks_dir}/${pf}/lib/pkgconfig
+    }
+}
+
+set input_plugins {shape raster}
+
+variant geos description {Build GEOS plugin} {
+    depends_lib-append      port:geos
+    lappend input_plugins geos
+}
+
+variant gdal description {Build GDAL/OGR plugin} {
+    depends_lib-append      port:gdal
+    lappend input_plugins gdal ogr
+}
+
+variant osm description {Build OpenStreetMap plugin} {
+    depends_lib-append      port:curl
+    lappend input_plugins osm
+}
+
+variant postgis description {Build PostGIS plugin} {
+    depends_lib-append      port:postgis
+    lappend input_plugins postgis
+}
+
+variant sqlite description {Build SQLite plugin} {
+    depends_lib-append      port:sqlite3
+    lappend input_plugins sqlite
+}
+
+default_variants            +python27
+universal_variant           no
+
+configure.python            /usr/bin/python
+build.cmd                   ${configure.python} scons/scons.py
+build.pre_args
+use_parallel_build          yes
+
+configure.cmd               ${build.cmd}
+configure.pre_args          configure --help
+configure.args              CXX=${configure.cxx} \
+                            CC=${configure.cc} \
+                            PREFIX=${prefix} \
+                            DESTDIR=${destroot} \
+                            CAIRO=False \
+                            FRAMEWORK_PYTHON=False \
+                            BINDINGS=none \
+                            JOBS=${build.jobs}
+foreach lib {BOOST ICU PNG JPEG TIFF PROJ CAIRO SQLITE} {
+    configure.args-append   ${lib}_INCLUDES=${prefix}/include
+    configure.args-append   ${lib}_LIBS=${prefix}/lib
+}
+
+destroot.destdir
+
+pre-configure {
+    # Hack to check for correct boost variant
+    if {![catch {set pys [python_branch]}]} {
+        set boost_py ${prefix}/lib/libboost_python-mt.dylib
+        if {![file exists ${boost_py}]} {
+            ui_error "
+****
+**** Your current boost does not have Python support. Please reinstall
+**** boost before trying ${name} +python${pys} again:
+****
+****     sudo port install boost +python${pys}
+****
+"
+            return -code error "Boost.Python missing"
+        }
+        regexp {Python\.framework/Versions/([[:digit:]]\.[[:digit:]])} \
+          [exec /usr/bin/otool -L ${boost_py}] foo bpv
+        if {[set bps [string replace ${bpv} 1 1]] != ${pys}} {
+            if {${bps} ni ${python_suffixes}} {
+                ui_error "
+****
+**** Your current boost is incompatible with ${name} +python${pys}.
+**** Please install the boost variant that matches ${name}:
+****
+****     sudo port install boost +python${pys}
+****
+"
+                return -code error "Incompatible Boost.Python"
+            }
+            ui_error "
+****
+**** ${name} +python${pys} is incompatible with your current boost.
+**** Please install the ${name} variant that matches boost +python${bps}:
+****
+****     sudo port install ${name} +python${bps}
+****
+**** or install the boost variant that matches ${name} +python${pys}:
+****
+****     sudo port install boost +python${pys}
+****
+"
+            return -code error "Incompatible Boost.Python"
+        }
+    }
+    
+    # Must be evaluated after the variants
+    configure.args-append           INPUT_PLUGINS=[join ${input_plugins} ","]
+    if {[variant_isset postgis]} {
+        regexp {postgresql[[:digit:]]+} [glob ${prefix}/lib/postgresql*/postgis*.so] pg
+        configure.args-append       PG_CONFIG=${prefix}/lib/${pg}/bin/pg_config
+        if {[variant_isset sqlite]} {
+            configure.args-append   PGSQL2SQLITE=True
+        }
+    }
+}
+
+post-destroot {
+    set docdir ${destroot}${prefix}/share/doc/${name}
+    xinstall -d -m 755 ${docdir}/ogcserver
+    xinstall -m 644 ${worksrcpath}/docs/ogcserver/readme.txt ${docdir}/ogcserver
+    xinstall -m 644 -W ${worksrcpath} AUTHORS CHANGELOG COPYING README ${docdir}
+    xinstall -d -m 755 ${destroot}${prefix}/share/examples/${name}
+    copy ${worksrcpath}/demo ${destroot}${prefix}/share/examples/${name}
+}
