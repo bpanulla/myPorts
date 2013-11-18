@@ -21,5 +21,5 @@ checksums           md5     9ddc543586810e35f186e0db919b570b \
                     sha1    f74bfe87c68774fff11aa5bea52e80701e9e166e \
                     rmd160  c994c3ef789a6f58b866f909aebf9fb9d87a719e
 
-depends_lib-append	port:py27-distribute port:py27-pil
+depends_lib-append	port:py27-setuptools port:py27-pil
 worksrcdir		ModestMaps-${version}

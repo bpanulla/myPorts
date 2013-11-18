@@ -23,7 +23,7 @@ checksums           md5     ab3d3a5f71ebb6fe4fd33539f5d5768e \
                     sha1    ea997378c2dcf71b436f0c869524175ca6385e8d \
                     rmd160  9f9bfcf6432548ba21491e4c1c8aac48576d7f3c
 
-depends_lib-append	port:py27-distribute port:py27-isodate
+depends_lib-append	port:py27-setuptools port:py27-isodate
 
 test.run		yes
 test.cmd		${python.bin} run_tests.py
