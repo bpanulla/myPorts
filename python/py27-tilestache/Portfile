@@ -19,4 +19,4 @@ checksums           md5     c3b287bdb2fc603ba7df459f1415d6e0 \
                     sha1    7ef31776620b8e3a8c5aec668aa4ceb5af829d7d \
                     rmd160  dc748b3720c4993024fa0e8d363be334d179cdcb
 
-depends_lib-append	port:py27-distribute port:py27-simplejson port:py27-pil port:py27-modestmaps
+depends_lib-append	port:py27-setuptools port:py27-simplejson port:py27-pil port:py27-modestmaps

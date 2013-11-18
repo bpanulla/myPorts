@@ -22,7 +22,7 @@ checksums           md5     4ab330655445387b449de381f6ca864c \
                     sha1    055e06751f0c853610917c90e0839bc07798f4b1 \
                     rmd160  ac0dd1fd5bd9e11480c8335532f285e14a7289af
 
-depends_lib-append	port:py27-distribute
+depends_lib-append	port:py27-setuptools
 
 test.run		yes
 test.cmd		${python.bin} setup.py test
